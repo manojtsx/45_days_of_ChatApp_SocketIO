@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import User from "../user/user-model";
+import generateToken from "../lib/generateToken";
 
 class AuthController {
   public login = asyncHandler(async (req: Request, res: Response) => {
@@ -13,6 +14,7 @@ class AuthController {
         name: user.name,
         email: user.email,
         pic: user.pic,
+        token: generateToken(user._id),
       });
     } else {
       res.status(401);

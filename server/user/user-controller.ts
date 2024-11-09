@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import User from "./user-model";
 import generateToken from "../lib/generateToken";
+import { CustomRequest } from "../interfaces/user-interface";
 
 class UserController {
   public register = asyncHandler(async (req: Request, res: Response) => {
@@ -36,6 +37,24 @@ class UserController {
       throw new Error("Failed to create the user");
     }
   });
+
+  //  /api/user?search=mnaoj
+  public getAllUsers = asyncHandler(
+    async (req: CustomRequest, res: Response) => {
+      const { search } = req.query;
+      console.log(req.user);
+      const query = search
+        ? {
+            $or: [
+              { name: { $regex: search, $options: "i" } },
+              { email: { $regex: search, $options: "i" } },
+            ],
+          }
+        : {};
+      const users = await User.find(query).find({ _id: { $ne: req.user._id } });
+      res.send(users);
+    }
+  );
 }
 
 export default new UserController();
