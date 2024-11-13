@@ -126,6 +126,25 @@ export default function BasicTabs() {
     }
   };
 
+  const onGuestLoginClick = async () => {
+    try {
+      const guestUser = { email: "manoj@gmail.com", password: "123456" };
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const { data } = await api.post("/api/user/login", guestUser, config);
+      toast.success("Login successful");
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      setLoading(false);
+      navigate("/chats");
+    } catch (err: any) {
+      toast.error(err.message);
+      setLoading(false);
+    }
+  };
+
   const onRegisterClick = async () => {
     setLoading(true);
     if (registerUser.password !== registerUser.confirmPassword) {
@@ -185,7 +204,10 @@ export default function BasicTabs() {
               name="password"
             />
           </div>
-          <BasicButtons text="Log In" onClick={onLoginClick} />
+          <div className="flex flex-col gap-3">
+            <BasicButtons text="Log In" onClick={onLoginClick} />
+            <BasicButtons text="Login As Guest" onClick={onGuestLoginClick} />
+          </div>
         </div>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>

@@ -1,24 +1,25 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { ChatInterface } from "@/interfaces/chat-interface";
+import { chatState } from "@/context/ChatProvider";
+import ChatBox from "@/components/ChatBox";
+import MyChats from "@/components/MyChats";
+import SideDrawer from "@/components/SideDrawer";
+import { UserInterface } from "@/interfaces/form-control";
 
 const API = import.meta.env.VITE_BACKEND_URL;
 
 function ChatPage() {
-  const [chats, setChats] = useState<ChatInterface[]>([]);
-  const fetchAllChats = async () => {
-    const { data } = await axios.get(`${API}/api/chat`);
-    console.log(data);
-    setChats(data);
-  };
-  useEffect(() => {
-    fetchAllChats();
-  }, []);
+  console.log(chatState());
+  let user: UserInterface | undefined;
+  if (chatState()) {
+    user = chatState()?.user;
+  }
+
   return (
-    <div>
-      {chats.map((chat) => {
-        return <div key={chat._id}>{chat.chatName}</div>;
-      })}
+    <div style={{ width: "100%" }}>
+      {user && <SideDrawer />}
+      <div className="flex justify-between">
+        {user && <MyChats />}
+        {user && <ChatBox />}
+      </div>
     </div>
   );
 }
