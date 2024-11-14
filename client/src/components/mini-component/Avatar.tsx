@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { chatState } from "@/context/ChatProvider";
 import ProfileModel from "./ProfileModel";
+import { useNavigate } from "react-router-dom";
 
 function Avatar() {
+  const navigate = useNavigate();
   const { user } = chatState()!;
   const [menuOpen, setMenuOpen] = useState(false);
   const [openProfileModal, setOpenProfileModal] = useState(false);
@@ -13,6 +15,11 @@ function Avatar() {
 
   const closeMenu = () => {
     setMenuOpen(false);
+  };
+
+  const logoutHandler = () => {
+    localStorage.removeItem("userInfo");
+    navigate("/");
   };
 
   return (
@@ -53,7 +60,10 @@ function Avatar() {
             </li>
             <li
               className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-600"
-              onClick={closeMenu}
+              onClick={() => {
+                closeMenu();
+                logoutHandler();
+              }}
             >
               Logout
             </li>
@@ -62,7 +72,9 @@ function Avatar() {
       )}
 
       {/* Profile Modal */}
-      {openProfileModal && <ProfileModel onClose={()=>setOpenProfileModal(false)}/>}
+      {openProfileModal && (
+        <ProfileModel onClose={() => setOpenProfileModal(false)} />
+      )}
     </div>
   );
 }

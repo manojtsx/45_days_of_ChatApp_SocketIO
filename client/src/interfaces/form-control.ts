@@ -26,11 +26,13 @@ export interface A11yProps {
 }
 
 export interface UserInterface {
+  _id?: string;
   name?: string;
   password: string;
   email: string;
   confirmPassword?: string;
   pic?: string;
+  token?: string;
 }
 
 export interface InputFileInterface {

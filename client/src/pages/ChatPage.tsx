@@ -7,7 +7,6 @@ import { UserInterface } from "@/interfaces/form-control";
 const API = import.meta.env.VITE_BACKEND_URL;
 
 function ChatPage() {
-  console.log(chatState());
   let user: UserInterface | undefined;
   if (chatState()) {
     user = chatState()?.user;
