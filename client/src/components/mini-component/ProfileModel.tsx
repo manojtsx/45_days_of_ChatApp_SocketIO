@@ -7,7 +7,7 @@ function ProfileModal({ onClose }: { onClose: () => void }) {
         <h2 className="text-xl font-semibold mb-4">Profile</h2>
         <div className="flex flex-col items-center rounded-lg shadow-lg p-6 w-80 max-w-full text-center">
           <img
-            src={user && user.pic}
+            src={user && user.pic ? user.pic : ""}
             alt="User Profile Picture"
             className="w-24 h-24 rounded-full mb-4 object-cover"
           />

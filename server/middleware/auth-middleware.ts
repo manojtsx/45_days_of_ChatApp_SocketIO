@@ -14,12 +14,10 @@ const protect = asyncHandler(
     ) {
       try {
         token = req.headers.authorization.split(" ")[1];
-
+        
         if (config.key) {
           const decoded = jwt.verify(token, config.key) as JwtPayload;
-          console.log(decoded);
           req.user = await User.findById(decoded.userId).select("-password");
-          console.log(req.user);
           next();
         } else {
           throw new Error("JWT key is not defined");

@@ -7,11 +7,12 @@ import { SearchUserDrawerProps } from "@/interfaces/drawer-interface";
 import ChatLoading from "./mini-component/ChatLoading";
 
 function SearchUserDrawer({ open, onClose }: SearchUserDrawerProps) {
-  const { user } = chatState()!;
+  const { user, setSelectedChat, chats, setChats } = chatState()!;
   const [users, setUsers] = useState<UserInterface[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<UserInterface[]>([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const [loadingChat, setLoadingChat] = useState(false);
 
   useEffect(() => {
     // Fetch all users
@@ -20,15 +21,13 @@ function SearchUserDrawer({ open, onClose }: SearchUserDrawerProps) {
         const config = {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${user.token}`,
+            Authorization: `Bearer ${user?.token}`,
           },
         };
         setLoading(true);
         try {
           const { data } = await api.get("/api/user/", config);
-          console.log(data);
           setUsers(data);
-          setFilteredUsers(data);
         } catch (error) {
           toast.error("Failed to fetch users");
         } finally {
@@ -48,6 +47,28 @@ function SearchUserDrawer({ open, onClose }: SearchUserDrawerProps) {
         user.name?.toLowerCase().includes(search.toLowerCase())
       )
     );
+  };
+
+  const accessChat = async (userId: string) => {
+    try {
+      setLoadingChat(true);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      };
+      const { data } = await api.post("/api/chat/", { userId }, config);
+      if (!chats.includes(data._id)) {
+        setChats([...chats, data._id]);
+      }
+      setSelectedChat(data);
+      onClose();
+    } catch (err) {
+      toast.error("Failed to access chat");
+    } finally {
+      setLoadingChat(false);
+    }
   };
   return (
     <div
@@ -100,7 +121,10 @@ function SearchUserDrawer({ open, onClose }: SearchUserDrawerProps) {
                   {user.email}
                 </p>
               </div>
-              <button className="px-3 py-1 ml-4 text-sm text-white bg-green-500 rounded hover:bg-green-600">
+              <button
+                className="px-3 py-1 ml-4 text-sm text-white bg-green-500 rounded hover:bg-green-600"
+                onClick={() => accessChat(user._id as string)}
+              >
                 Chat
               </button>
             </div>

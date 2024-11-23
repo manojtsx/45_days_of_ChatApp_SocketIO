@@ -81,7 +81,6 @@ export default function BasicTabs() {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           setRegisterUser({ ...registerUser, pic: data.secure_url.toString() });
           setLoading(false);
         })
@@ -99,7 +98,6 @@ export default function BasicTabs() {
     const name = event.target.name;
     const value = event.target.value;
     setRegisterUser({ ...registerUser, [name]: value });
-    console.log(registerUser);
   };
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,13 +106,18 @@ export default function BasicTabs() {
     setLoginUser({ ...loginUser, [name]: value });
   };
 
-  const onLoginClick = async () => {
+  const onLoginClick = async (event : React.FormEvent<HTMLButtonElement>) => {
     try {
+      event.preventDefault();
       const config = {
         headers: {
           "Content-Type": "application/json",
         },
       };
+      if(loginUser.email === "" || loginUser.password === ""){
+        toast.error("Please enter email and password");
+        return;
+      }
       const { data } = await api.post("/api/user/login", loginUser, config);
       toast.success("Login successful");
       localStorage.setItem("userInfo", JSON.stringify(data));
@@ -126,7 +129,9 @@ export default function BasicTabs() {
     }
   };
 
-  const onGuestLoginClick = async () => {
+  const onGuestLoginClick = async (event : React.FormEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
     try {
       const guestUser = { email: "manoj@gmail.com", password: "123456" };
       const config = {
@@ -135,7 +140,7 @@ export default function BasicTabs() {
         },
       };
       const { data } = await api.post("/api/user/login", guestUser, config);
-      toast.success("Login successful");
+      toast.success("Guest Login successful");
       localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
       navigate("/chats");

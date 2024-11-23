@@ -6,7 +6,6 @@ import { CustomRequest } from "../interfaces/user-interface";
 
 class UserController {
   public register = asyncHandler(async (req: Request, res: Response) => {
-    console.log(req.body);
     const { name, email, password, pic } = req.body;
     if (!name || !email || !password) {
       res.status(400);
@@ -41,8 +40,8 @@ class UserController {
   //  /api/user?search=mnaoj
   public getAllUsers = asyncHandler(
     async (req: CustomRequest, res: Response) => {
+      console.log(req.query)
       const { search } = req.query;
-      console.log(req.user);
       const query = search
         ? {
             $or: [
@@ -55,6 +54,7 @@ class UserController {
       res.send(users);
     }
   );
+
 }
 
 export default new UserController();

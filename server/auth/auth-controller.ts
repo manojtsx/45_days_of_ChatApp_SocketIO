@@ -5,7 +5,6 @@ import generateToken from "../lib/generateToken";
 
 class AuthController {
   public login = asyncHandler(async (req: Request, res: Response) => {
-    console.log(req.body);
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (user && (await user.matchPassword(password))) {

@@ -9,7 +9,10 @@ const API = import.meta.env.VITE_BACKEND_URL;
 function ChatPage() {
   let user: UserInterface | undefined;
   if (chatState()) {
-    user = chatState()?.user;
+    const chatUser = chatState()?.user;
+    if (chatUser) {
+      user = chatUser;
+    }
   }
 
   return (

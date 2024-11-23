@@ -10,7 +10,7 @@ export interface BasicFormControlProps {
 
 export interface ButtonProps {
   text: string;
-  onClick: () => void;
+  onClick: (event:React.FormEvent<HTMLButtonElement>) => void;
   isLoading?: boolean;
 }
 

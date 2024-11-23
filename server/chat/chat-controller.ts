@@ -10,7 +10,6 @@ class ChatController {
     async (req: CustomRequest, res: Response) => {
       const { userId } = req.body;
       if (!userId) {
-        console.log("UserId param not sent with request");
         res.sendStatus(400);
         return;
       }
@@ -69,7 +68,10 @@ class ChatController {
             });
             res.status(200).send(results);
           });
-      } catch (err) {}
+      } catch (err: any) {
+        res.status(400);
+        throw new Error(err.message);
+      }
     }
   );
 
@@ -79,8 +81,9 @@ class ChatController {
         res.status(400).send({ Message: "Please Fill all the fields" });
         return;
       }
-
+      
       let users = JSON.parse(req.body.users);
+      console.log(users);
       if (users.length < 2) {
         res
           .status(400)
@@ -181,7 +184,6 @@ class ChatController {
       }
     }
   );
-
 }
 
 export default new ChatController();
